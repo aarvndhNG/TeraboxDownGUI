@@ -23,7 +23,8 @@ class URLValidator:
             'dubox.com',
             'www.dubox.com',
             '4funbox.com',
-            'www.4funbox.com'
+            'www.4funbox.com',
+            'terafileshare.com'
         ]
         
         # Terabox URL patterns
