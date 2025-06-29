@@ -36,7 +36,7 @@ class URLValidator:
             r'https?://(?:www\.)?nephobox\.com/s/[\w-]+',
             r'https?://(?:www\.)?dubox\.com/s/[\w-]+',
             r'https?://(?:www\.)?4funbox\.com/s/[\w-]+',
-            https?://[^/]*terafileshare[^/]*/s/[^/?]+,
+            r'https?://[^/]*terafileshare[^/]*/s/[^/?]+',
         ]
         
     def is_valid_url(self, url):
