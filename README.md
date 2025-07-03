@@ -1,216 +1,101 @@
-# Terabox Downloader GUI
+# MKV to MP4 Telegram Bot
 
-A comprehensive Python application for downloading files from Terabox cloud storage service with both desktop GUI and Google Colab support.
+This Telegram bot converts MKV video files to MP4 format.
 
 ## Features
 
-- **Desktop GUI Application**: Full-featured tkinter interface with tabs for downloads, file viewing, history, and settings
-- **Google Colab Support**: Jupyter notebook interface for cloud-based downloading
-- **Web Interface**: Browser-based interface for Colab environments
-- **Batch Downloads**: Download multiple files simultaneously
-- **Progress Tracking**: Real-time download progress and statistics
-- **File Viewer**: Built-in preview for images, text files, and media info
-- **Download History**: Track all your downloads with search and filtering
-- **Configurable Settings**: Customize download behavior, API settings, and interface preferences
+- Responds to `/start` and `/help` commands.
+- Handles MKV file uploads (sent as video or document).
+- Converts MKV files to MP4 using FFmpeg.
+  - Attempts to copy video/audio streams directly for speed.
+  - Falls back to full re-encoding (H.264 video, AAC audio) if direct copy fails.
+- Sends the converted MP4 file back to the user.
+- Cleans up temporary files after processing.
 
-## Installation & Usage
+## Prerequisites
 
-### Option 1: Desktop GUI (Recommended for Local Use)
+- Python 3.8+
+- FFmpeg installed and available in your system's PATH.
+- A Telegram Bot Token.
 
-#### Prerequisites
-- Python 3.6 or higher
-- tkinter (usually included with Python)
+## Setup and Installation
 
-#### Setup
+1.  **Clone the repository (or download the files):**
+    ```bash
+    git clone <your-repository-url>
+    cd <repository-directory>
+    ```
+
+2.  **Install FFmpeg:**
+    *   **On Debian/Ubuntu:**
+        ```bash
+        sudo apt update
+        sudo apt install ffmpeg
+        ```
+    *   **On macOS (using Homebrew):**
+        ```bash
+        brew install ffmpeg
+        ```
+    *   **On Windows:**
+        Download FFmpeg from [the official website](https://ffmpeg.org/download.html) and add the `bin` directory (containing `ffmpeg.exe`) to your system's PATH environment variable.
+
+3.  **Create a virtual environment (recommended):**
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
+
+4.  **Install Python dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5.  **Set up your Telegram Bot Token:**
+    *   Talk to [BotFather](https://t.me/BotFather) on Telegram to create a new bot or get the token for an existing one.
+    *   Set the token as an environment variable named `TELEGRAM_BOT_TOKEN`:
+        ```bash
+        export TELEGRAM_BOT_TOKEN="YOUR_ACTUAL_BOT_TOKEN"
+        ```
+        (On Windows, use `set TELEGRAM_BOT_TOKEN=YOUR_ACTUAL_BOT_TOKEN` in Command Prompt or `$env:TELEGRAM_BOT_TOKEN="YOUR_ACTUAL_BOT_TOKEN"` in PowerShell).
+        For persistent storage, you might want to add this to your shell's profile file (e.g., `.bashrc`, `.zshrc`) or use a `.env` file with a library like `python-dotenv` (though this is not implemented in the current `bot.py`).
+
+## Running the Bot
+
+Once you have completed the setup, run the bot using:
+
 ```bash
-# Clone or download the files
-# Install dependencies
-pip install requests pillow
-
-# Run the application
-python main.py
+python bot.py
 ```
 
-The GUI will launch with four main tabs:
-- **Download**: Add Terabox URLs and manage downloads
-- **File Viewer**: Browse and preview downloaded files
-- **History**: View download statistics and history
-- **Settings**: Configure application preferences
+The bot will start polling for updates from Telegram.
 
-### Option 2: Google Colab (Cloud-Based)
+## Usage
 
-#### Quick Start
-1. Upload the `Terabox_Downloader_Colab.ipynb` file to Google Colab
-2. Open it in Colab and run the setup cell
-3. Use the provided functions to download files
-
-#### Example Usage in Colab
-```python
-# Single file download
-terabox_url = "https://terabox.com/s/your-share-link"
-success, result = downloader.download_file(terabox_url)
-
-# Batch download
-urls = [
-    "https://terabox.com/s/link1",
-    "https://terabox.com/s/link2",
-    "https://terabox.com/s/link3"
-]
-results = downloader.download_multiple(urls)
-```
-
-#### Alternative: Web Interface in Colab
-```python
-# Run this in a Colab cell for a web interface
-!python colab_web_interface.py &
-
-# Then use the Colab's port forwarding to access the web interface
-```
-
-### Option 3: Command Line (Colab Setup)
-
-```python
-# Import the Colab setup
-from colab_setup import main
-downloader = main()
-
-# Download files
-success, filepath = downloader.download_file("https://terabox.com/s/your-link")
-```
-
-## Supported Terabox Domains
-
-- terabox.com
-- 1024terabox.com
-- teraboxapp.com
-- nephobox.com
-- dubox.com
-- 4funbox.com
-
-## Configuration
-
-### Desktop GUI Settings
-The desktop application includes comprehensive settings:
-
-- **Download Settings**: Directory, concurrent downloads, timeouts, retry attempts
-- **Interface Settings**: Theme selection, window behavior
-- **API Settings**: Choose between free APIs or configure custom endpoints
-- **Advanced Settings**: Debug mode, history retention, temporary directories
-
-### Colab Configuration
-In Google Colab, downloads are saved to `/content/downloads/` by default. You can specify a different path:
-
-```python
-downloader.download_file(url, download_path="/content/my_downloads")
-```
-
-## API Information
-
-This application uses free Terabox link extraction APIs:
-- **Primary**: Ashlynn's Free API (https://ashlynn.serv00.net/Ashlynnterabox.php)
-- **Backup**: Support for additional APIs can be configured
-
-**Note**: These are third-party free services and may have limitations or occasional downtime.
-
-## File Management
-
-### Desktop Version
-- Downloads saved to configured directory (default: ~/Downloads)
-- Built-in file viewer supports images, text files, and media info
-- File operations: open, delete, view in explorer
-
-### Colab Version
-- Files saved to `/content/downloads/`
-- Files persist only during the Colab session
-- Use the download-to-computer feature to save files locally
-- Automatic zip creation for batch downloads
-
-## Troubleshooting
-
-### Desktop GUI Issues
-- **Slow startup**: Fixed in recent version by optimizing file list loading
-- **Download failures**: Check internet connection and URL validity
-- **GUI not showing**: Ensure tkinter is installed and display is available
-
-### Colab Issues
-- **Module import errors**: Run the setup cell first
-- **Download failures**: Verify Terabox URLs are valid share links
-- **Storage full**: Colab has ~78GB storage limit
-- **Session timeout**: Download files to your computer before session ends
-
-### Common Solutions
-1. **Invalid URL**: Ensure you're using a Terabox share link (contains `/s/` or `surl=`)
-2. **Network errors**: Check internet connection and try again
-3. **API unavailable**: The free APIs may have temporary outages
-4. **File not found**: Some Terabox links may have expired or been removed
+1.  Open a chat with your bot on Telegram.
+2.  Send the `/start` command to see the welcome message.
+3.  Send an MKV video file to the chat (either as a direct video upload or as a document).
+4.  The bot will download the file, convert it, and send back the MP4 version.
 
 ## Project Structure
 
 ```
-terabox-downloader/
-├── main.py                          # Desktop GUI entry point
-├── gui/                            # GUI components
-│   ├── main_window.py              # Main application window
-│   ├── download_tab.py             # Download management tab
-│   ├── viewer_tab.py               # File viewer tab
-│   ├── history_tab.py              # Download history tab
-│   └── settings_tab.py             # Settings configuration tab
-├── core/                           # Core functionality
-│   ├── config_manager.py           # Configuration management
-│   ├── terabox_api.py              # API communication
-│   ├── download_manager.py         # Download processing
-│   └── file_viewer.py              # File viewing utilities
-├── utils/                          # Utility modules
-│   ├── file_utils.py               # File operations
-│   └── validators.py               # URL and input validation
-├── colab_setup.py                  # Google Colab setup script
-├── colab_web_interface.py          # Web interface for Colab
-└── Terabox_Downloader_Colab.ipynb  # Jupyter notebook for Colab
+.
+├── bot.py              # Main Python script for the Telegram bot
+├── requirements.txt    # Python dependencies
+└── README.md           # This file
 ```
+
+## Troubleshooting
+
+*   **"TELEGRAM_BOT_TOKEN environment variable not set!"**: Make sure you have correctly set the `TELEGRAM_BOT_TOKEN` environment variable before running the bot.
+*   **Conversion fails / FFmpeg errors**:
+    *   Ensure FFmpeg is installed correctly and accessible from the command line (try running `ffmpeg -version`).
+    *   The bot logs FFmpeg errors to the console. Check these logs for more details.
+    *   Some MKV files might have unusual codecs or configurations that FFmpeg struggles with.
+*   **Bot doesn't respond**:
+    *   Check that the bot is running and that the `TELEGRAM_BOT_TOKEN` is correct.
+    *   Look for any error messages in the console where the bot is running.
 
 ## Contributing
 
-This is an open-source project. Feel free to:
-- Report bugs or issues
-- Suggest new features
-- Submit improvements
-- Add support for additional APIs
-
-## Disclaimer
-
-This tool is for educational and personal use only. Ensure you have permission to download files and comply with Terabox's terms of service. The developers are not responsible for any misuse of this application.
-
-## GitHub Repository
-
-This project is now fully configured as a GitHub repository with all necessary components:
-
-### Repository Features
-- ✅ Complete modular source code architecture
-- ✅ Installation scripts (`setup.py`, `requirements-github.txt`)
-- ✅ Comprehensive documentation and contribution guidelines
-- ✅ MIT open-source license
-- ✅ Proper Git configuration with `.gitignore`
-- ✅ Multiple deployment options (desktop GUI and Google Colab)
-- ✅ Cross-platform compatibility (Windows, macOS, Linux)
-
-### Ready for GitHub Deployment
-All files are prepared for immediate GitHub repository creation:
-- Proper project structure and organization
-- License and contribution documentation
-- Installation and usage instructions
-- Development setup guidelines
-- Issue reporting templates
-
-### Next Steps
-1. Create a new repository on GitHub
-2. Upload or push these files to your repository
-3. Update GitHub URLs in `setup.py` and documentation
-4. Share with the community!
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Disclaimer
-
-This tool is for educational and personal use only. Users are responsible for complying with Terabox's terms of service and applicable laws. The developers are not responsible for any misuse of this application.
+Feel free to open issues or submit pull requests if you have suggestions for improvements or find bugs.
