@@ -6,11 +6,16 @@ This Telegram bot converts MKV video files to MP4 format.
 
 - Responds to `/start` and `/help` commands.
 - Handles MKV file uploads (sent as video or document).
-- Converts MKV files to MP4 using FFmpeg.
-  - Attempts to copy video/audio streams directly for speed.
-  - Falls back to full re-encoding (H.264 video, AAC audio) if direct copy fails.
+- Converts MKV files to MP4 using FFmpeg, **now with streaming for better large file handling**.
+  - Downloads the MKV file chunk by chunk and pipes it directly to FFmpeg's input.
+  - FFmpeg's output (MP4) is streamed directly to Telegram for upload.
+  - This significantly reduces disk space and memory usage compared to downloading/saving the entire file before processing.
+  - Attempts to copy video/audio streams directly for speed (`-c:v copy -c:a aac`).
+  - Falls back to full re-encoding (H.264 video, AAC audio: `-c:v libx264 -c:a aac`) if direct copy fails or is unsuitable.
 - Sends the converted MP4 file back to the user.
-- Cleans up temporary files after processing.
+- Provides periodic "typing..." feedback during processing.
+- Informs users if a file is very large (e.g., >1GB), warning about potential long processing times or limits.
+- No longer creates a `temp` directory for intermediate files, as processing is now in-memory/stream-based.
 
 ## Prerequisites
 
